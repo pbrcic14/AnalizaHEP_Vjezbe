@@ -31,14 +31,12 @@ int main()
 {
 	ElementaryParticle HiggsBoson("Higgs boson", 125, 1);
 	ElementaryParticle topQuark("top quark", 173, 0);
-	ElementaryParticle ZBoson("Z boson", 91, 1);
 	ElementaryParticle* ptrZBoson;
 	
-	ptrZBoson = &ZBoson;
-		
+	ptrZBoson = new ElementaryParticle("Z boson", 91, 1);
+	
 	HiggsBoson.printInfo();
 	topQuark.printInfo();
-	//ZBoson.printInfo();
 	ptrZBoson -> printInfo();
 
 	delete ptrZBoson;
