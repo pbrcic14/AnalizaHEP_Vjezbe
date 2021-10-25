@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <cstdlib>
+#include <time.h>
+#include <random>
 #include <ElementaryParticle.h>
 
 using namespace std;
@@ -38,8 +41,60 @@ void ElementaryParticle::setMomentum(double p1, double p2, double p3)
 }
 void ElementaryParticle::bosonDecay(ElementaryParticle* particle1, ElementaryParticle* particle2)
 {
+	srand(time(NULL));
+	double r, E1, E2;
+	
+	// if decay is possible - random to decide channel, assign mass
 	if(isBoson == 0)
 		cout << "Decay is not possible.\n";
 	else
-		cout << "Decay is possible yaay!\n";
+	{
+		r = (double) rand() / RAND_MAX;
+		if(r < 0.214)
+		{
+			cout << "Decay to W bosons.\n";
+			particle1 -> mass = 80.379;
+			particle2 -> mass = 80.379;
+		}
+		else if(r < 0.278)
+		{
+			cout << "Decay to tau leptons.\n";
+			particle1 -> mass = 1.777;
+			particle2 -> mass = 1.777;
+		}
+		else if(r < 0.304)
+		{
+			cout << "Decay to Z bosons.\n";
+			particle1 -> mass = 91.188;
+			particle2 -> mass = 91.188;
+		}
+		else
+		{
+			cout << "Decay to b quarks.\n";
+			particle1 -> mass = 4.18;
+			particle2 -> mass = 4.18;
+		}
+		
+		// calculate energy
+		E1 = pow(particle1 -> mass, 2);
+		E2 = pow(particle2 -> mass, 2);
+		for(int i = 1; i < 4; i++)
+		{
+			particle1 -> momentum[i] = ((double) rand() / RAND_MAX) * momentum[i];
+			particle2 -> momentum[i] = momentum[i] - particle1 -> momentum[i];
+			
+			E1 += pow(particle1 -> momentum[i], 2);
+			E2 += pow(particle2 -> momentum[i], 2);
+		}
+		particle1 -> momentum[0] = sqrt(E1);
+		particle2 -> momentum[0] = sqrt(E2);
+		
+		// output momentum 4-vector
+		cout << "Momentum 4-vector of particle 1:\n";
+		for(int i = 0; i < 4; i++)
+			cout << particle1 -> momentum[i] << "\n";
+		cout << "Momentum 4-vector of particle 2:\n";
+		for(int i = 0; i < 4; i++)
+			cout << particle2 -> momentum[i] << "\n";
+	}
 }
