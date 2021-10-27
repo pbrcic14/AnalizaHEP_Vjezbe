@@ -43,44 +43,54 @@ void ElementaryParticle::setMomentum(double p1, double p2, double p3)
 }
 void ElementaryParticle::bosonDecay(ElementaryParticle* particle1, ElementaryParticle* particle2)
 {
-	srand(time(NULL));
+	random_device ran_dev;
+	mt19937 gen(ran_dev());
+	uniform_real_distribution<double> dist(0.0, 1.0);
 	double r, E1, E2;
 	
 	if(isBoson == 0)
 		cout << "Decay is not possible.\n";
 	else
 	{
-		r = (double) rand() / RAND_MAX;
+		r = dist(gen);
 		if(r < 0.214)
 		{
 			cout << "Decay to W bosons.\n\n";
 			particle1 -> mass = 80.379;
 			particle2 -> mass = 80.379;
+			particle1 -> name = "W boson";
+			particle2 -> name = "W boson";
 		}
 		else if(r < 0.278)
 		{
 			cout << "Decay to tau leptons.\n\n";
 			particle1 -> mass = 1.777;
 			particle2 -> mass = 1.777;
+			particle1 -> name = "tau lepton";
+			particle2 -> name = "tau lepton";
 		}
 		else if(r < 0.304)
 		{
 			cout << "Decay to Z bosons.\n\n";
 			particle1 -> mass = 91.188;
 			particle2 -> mass = 91.188;
+			particle1 -> name = "Z boson";
+			particle2 -> name = "Z boson";
 		}
 		else
 		{
 			cout << "Decay to b quarks.\n\n";
 			particle1 -> mass = 4.18;
 			particle2 -> mass = 4.18;
+			particle1 -> name = "b quark";
+			particle2 -> name = "b quark";
 		}
 		
 		E1 = pow(particle1 -> mass, 2);
 		E2 = pow(particle2 -> mass, 2);
 		for(int i = 1; i < 4; i++)
 		{
-			particle1 -> momentum[i] = ((double) rand() / RAND_MAX) * momentum[i];
+			particle1 -> momentum[i] = dist(gen) * momentum[i];
 			particle2 -> momentum[i] = momentum[i] - particle1 -> momentum[i];
 			
 			E1 += pow(particle1 -> momentum[i], 2);
