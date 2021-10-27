@@ -58,32 +58,32 @@ void ElementaryParticle::bosonDecay(ElementaryParticle* particle1, ElementaryPar
 			cout << "Decay to W bosons.\n\n";
 			particle1 -> mass = 80.379;
 			particle2 -> mass = 80.379;
-			particle1 -> name = "W boson";
-			particle2 -> name = "W boson";
+			particle1 -> name = "W";
+			particle2 -> name = "W";
 		}
 		else if(r < 0.278)
 		{
 			cout << "Decay to tau leptons.\n\n";
 			particle1 -> mass = 1.777;
 			particle2 -> mass = 1.777;
-			particle1 -> name = "tau lepton";
-			particle2 -> name = "tau lepton";
+			particle1 -> name = "tau";
+			particle2 -> name = "tau";
 		}
 		else if(r < 0.304)
 		{
 			cout << "Decay to Z bosons.\n\n";
 			particle1 -> mass = 91.188;
 			particle2 -> mass = 91.188;
-			particle1 -> name = "Z boson";
-			particle2 -> name = "Z boson";
+			particle1 -> name = "Z";
+			particle2 -> name = "Z";
 		}
 		else
 		{
 			cout << "Decay to b quarks.\n\n";
 			particle1 -> mass = 4.18;
 			particle2 -> mass = 4.18;
-			particle1 -> name = "b quark";
-			particle2 -> name = "b quark";
+			particle1 -> name = "b";
+			particle2 -> name = "b";
 		}
 		
 		E1 = pow(particle1 -> mass, 2);
