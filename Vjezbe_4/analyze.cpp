@@ -1,11 +1,9 @@
 #include <iostream>
-#include <string>
 #include <fstream>
-#include <sstream>
-#include <random>
-#include <ctime>
-#include <cstdlib>
-#include <iomanip>
+#include <TROOT.h>
+#include <TChain.h>
+#include <TFile.h>
+#include <TApplication.h>
 #include <Analyzer.h>
 
 using namespace std;
@@ -15,7 +13,8 @@ int main()
 	Analyzer* thing;
 	thing = new Analyzer();
 	
-	thing -> readFile();
+	//thing -> readFile();
+	thing -> ConvertTxtToRootFile();
 	
 	delete thing;
 	
