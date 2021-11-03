@@ -13,7 +13,7 @@ int main()
 	Analyzer* thing;
 	thing = new Analyzer();
 	
-	thing -> Loop();
+	thing -> PlotHistogram();
 	
 	delete thing;
 	
