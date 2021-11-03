@@ -48,17 +48,17 @@ void Analyzer::ConvertTxtToRootFile()
 	TTree* tree = new TTree("tree", "Converting .txt to .root"); //TTree tree (name, title); Tree -> columnar dataset; TTree consists of a list of independent columns (branches, TBranch class)
 
 	tree->Branch("name1", &name1, "name1/S"); //Branch(name, address, string describing the leaf list); leaf: name/type
-	tree->Branch("E1", &p1[0], "E1/LF");
-	tree->Branch("px1", &p1[1], "px1/LF");
-	tree->Branch("py1", &p1[2], "py1/LF");
-	tree->Branch("pz1", &p1[3], "pz1/LF");
-	tree->Branch("pt1", &pt1, "pt1/LF");
+	tree->Branch("E1", &p1[0], "E1/D");
+	tree->Branch("px1", &p1[1], "px1/D");
+	tree->Branch("py1", &p1[2], "py1/D");
+	tree->Branch("pz1", &p1[3], "pz1/D");
+	tree->Branch("pt1", &pt1, "pt1/D");
 	tree->Branch("name2", &name2, "name2/S");
-	tree->Branch("E2", &p2[0], "E2/LF");
-	tree->Branch("px2", &p2[1], "px2/LF");
-	tree->Branch("py2", &p2[2], "py2/LF");
-	tree->Branch("pz2", &p2[3], "pz2/LF");
-	tree->Branch("pt2", &pt2, "pt2/LF");
+	tree->Branch("E2", &p2[0], "E2/D");
+	tree->Branch("px2", &p2[1], "px2/D");
+	tree->Branch("py2", &p2[2], "py2/D");
+	tree->Branch("pz2", &p2[3], "pz2/D");
+	tree->Branch("pt2", &pt2, "pt2/D");
 	
 	while(getline(input, line))
 	{
