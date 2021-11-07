@@ -19,11 +19,15 @@ void Analyzer::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       // if (Cut(ientry) < 0) continue;
+      
+      cout << name1 << endl;
    }
 }
 void Analyzer::PlotHistogram()
 {
-	TH1F* histo = new TH1F("histo", "pt", 100, 0, 150);
+	TH1F* histo1 = new TH1F("histo1", "pt1", 100, 0, 150);
+	TH1F* histo2 = new TH1F("histo2", "pt2", 100, 0, 150);
+	
 	if (fChain == 0) return;
 
 	Long64_t nentries = fChain->GetEntriesFast();
@@ -35,26 +39,33 @@ void Analyzer::PlotHistogram()
 		if (ientry < 0) break;
 		nb = fChain->GetEntry(jentry);   nbytes += nb;
 		// if (Cut(ientry) < 0) continue;
-		histo->Fill(pt1);
+		histo1->Fill(pt1);
+		histo2->Fill(pt2);
 	}
    
 	TCanvas* c = new TCanvas("c", "c", 900, 900);
 	
-	histo->SetTitle(TString("Transversal momentum of decay particle 1"));
-	histo->GetXaxis()->SetTitle("pt1 (GeV/c)");
-	histo->GetYaxis()->SetTitle("N");
-	histo->SetLineColor(2);
-	histo->SetFillColor(2);
-	histo->SetStats(0);
-	histo->Draw();
+	histo1->SetTitle(TString("Transversal momentum of decay particles"));
+	histo1->GetXaxis()->SetTitle("p_{T} (GeV/c)");
+	histo1->GetYaxis()->SetTitle("no. of events");
+	histo1->SetLineColor(857); // some blue
+	histo1->SetFillColor(857);
+	histo1->SetStats(0);
 	
-	TLegend *legend= new TLegend(0.7,0.7,0.9,0.8);
+	histo2->SetLineColor(kRed);
+	histo2->SetLineWidth(3);
 	
-	legend->SetHeader("Legend","C");
-	legend->AddEntry(histo,"Simulated pt1","l");
-	legend->Draw("pt1");
+	histo1->Draw();
+	histo2->Draw("hist same");
 	
-	c->SaveAs("pt1.pdf");
-	c->SaveAs("pt1.png");
-	c->SaveAs("pt1.root");
+	TLegend *legend= new TLegend(0.7,0.9,0.9,0.8);
+	
+	legend->SetHeader("Simulated for:","C");
+	legend->AddEntry(histo1,"particle 1","f");
+	legend->AddEntry(histo2,"particle 2","l");
+	legend->Draw();
+	
+	c->SaveAs("pt.pdf");
+	c->SaveAs("pt.png");
+	c->SaveAs("pt.root");
 }
