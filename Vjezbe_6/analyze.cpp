@@ -14,7 +14,7 @@ int main()
 	Analyzer* thing;
 	thing = new Analyzer();
 	
-	thing -> PlotHistogram();
+	thing->PlotHistogram();
 	
 	delete thing;
 	
