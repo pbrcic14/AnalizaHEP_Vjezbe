@@ -36,7 +36,11 @@ void Analyzer::PlotHistogram()
 	TLorentzVector* Higgs = new TLorentzVector();
 	
 	TCanvas* c = new TCanvas("c", "c", 900, 900);
-	TH1F* histo1 = new TH1F("histo1", "Reconstructed mass from 4 leptons", 200, 0.0, 150.0);
+	TH1F* histo1 = new TH1F("histo1", "Reconstructed mass from 4 leptons", 50, 90.0, 140.0);
+	
+	double w, wSum, L;
+	L = 137.0;
+	wSum = 6006820.0;
 	
 	if (fChain == 0)
 		return;
@@ -60,18 +64,20 @@ void Analyzer::PlotHistogram()
 		*Z2 = *lep3 + *lep4;
 		*Higgs = *Z1 + *Z2;
 		
-		histo1->Fill(Higgs->M());
+		w = L * 1000 * xsec * overallEventWeight / wSum;
+		
+		histo1->Fill(Higgs->M(),w);
 	}
 	
 	gPad->SetLeftMargin(0.15);
 	
 	histo1->GetXaxis()->SetTitle("m_{4l} (GeV)");
-	histo1->GetYaxis()->SetTitle("no. of events");
+	histo1->GetYaxis()->SetTitle("no. of events / 1 GeV");
 	histo1->SetStats(0);
 	histo1->GetXaxis()->SetRangeUser(90, 140);
 	histo1->SetLineColor(kAzure);
 	histo1->SetFillColor(kAzure);
-	histo1->Draw();
+	histo1->Draw("HIST");
 	
-	c->SaveAs("Reconstructed.png");
+	c->SaveAs("Weighted.png");
 }
