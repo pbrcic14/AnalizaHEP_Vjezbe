@@ -11,6 +11,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TH1F.h>
 #include <vector>
 
 using namespace std;
@@ -1423,6 +1424,9 @@ public :
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz8_1_JHUGen;   //!
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen;   //!
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen;   //!
+   
+   TH1F* histo1;
+   TH1F* histo2;
 
    Analyzer(TTree *tree=0);
    virtual ~Analyzer();
@@ -1454,6 +1458,9 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
 
    }
    Init(tree);*/
+   
+   histo1 = new TH1F("histo1", "Reconstructed mass", 50, 70.0, 170.0);
+   histo2 = new TH1F("histo2", "", 50, 70.0, 170.0);
 }
 
 Analyzer::~Analyzer()

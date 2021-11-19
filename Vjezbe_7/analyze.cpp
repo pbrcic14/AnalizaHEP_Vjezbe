@@ -15,6 +15,7 @@ int main()
 	thing = new Analyzer();
 	
 	thing->PlotHistogram("ggH125");
+	thing->PlotHistogram("qqZZ");
 	
 	delete thing;
 	
