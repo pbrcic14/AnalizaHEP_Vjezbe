@@ -38,9 +38,10 @@ void Analyzer::PlotHistogram()
 	TCanvas* c = new TCanvas("c", "c", 900, 900);
 	TH1F* histo1 = new TH1F("histo1", "Reconstructed mass from 4 leptons", 50, 90.0, 140.0);
 	
-	double w, wSum, L;
-	L = 137.0;
-	wSum = 6006820.0;
+	TFile f("/home/public/data/ggH125/ZZ4lAnalysis.root"); 
+	TH1F* histoCounter = (TH1F*)f.Get("ZZTree/Counters");
+	
+	double w, binContent;
 	
 	if (fChain == 0)
 		return;
@@ -64,7 +65,8 @@ void Analyzer::PlotHistogram()
 		*Z2 = *lep3 + *lep4;
 		*Higgs = *Z1 + *Z2;
 		
-		w = L * 1000 * xsec * overallEventWeight / wSum;
+		binContent = histoCounter->GetBinContent(40);
+		w = (137.0 * 1000.0 * xsec * overallEventWeight) / binContent;
 		
 		histo1->Fill(Higgs->M(),w);
 	}
@@ -80,4 +82,6 @@ void Analyzer::PlotHistogram()
 	histo1->Draw("HIST");
 	
 	c->SaveAs("Weighted.png");
+	
+	cout << histo1->Integral(1, 50) << endl;
 }
