@@ -1425,8 +1425,8 @@ public :
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz9_1_JHUGen;   //!
    TBranch        *b_p_Gen_GG_SIG_gXg5_1_gXz10_1_JHUGen;   //!
    
-   TH1F* histo1;
-   TH1F* histo2;
+   TH1F* histoSignal;
+   TH1F* histoBackground;
 
    Analyzer(TTree *tree=0);
    virtual ~Analyzer();
@@ -1459,8 +1459,8 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
    }
    Init(tree);*/
    
-   histo1 = new TH1F("histo1", "Reconstructed mass", 50, 70.0, 170.0);
-   histo2 = new TH1F("histo2", "", 50, 70.0, 170.0);
+   histoSignal = new TH1F("histoSignal", "Kinematic discriminant", 50, 0.0, 1.0);
+   histoBackground = new TH1F("histoBackground", "", 50, 0.0, 1.0);
 }
 
 Analyzer::~Analyzer()

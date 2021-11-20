@@ -27,14 +27,14 @@ void Analyzer::Loop()
    }
 }
 
-void Analyzer::PlotHistogram(TString name)
+void Analyzer::PlotHistogram(TString path)
 {
 	TTree *tree = new TTree;
 	
-	TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/home/public/data/"+name+"/ZZ4lAnalysis.root");
+	TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(path);
 	if (!f || !f->IsOpen())
-		f = new TFile("/home/public/data/"+name+"/ZZ4lAnalysis.root");
-	TDirectory * dir = (TDirectory*)f->Get("/home/public/data/"+name+"/ZZ4lAnalysis.root:/ZZTree");
+		f = new TFile(path);
+	TDirectory * dir = (TDirectory*)f->Get(path+":/ZZTree");
 	dir->GetObject("candTree",tree);
 	Init(tree);
 	
@@ -46,14 +46,15 @@ void Analyzer::PlotHistogram(TString name)
 	TLorentzVector* Z2 = new TLorentzVector();
 	TLorentzVector* Higgs = new TLorentzVector();
 	
-	TFile fw("/home/public/data/"+name+"/ZZ4lAnalysis.root"); 
-	TH1F* histoCounter = (TH1F*)fw.Get("ZZTree/Counters");
+	TFile* fw = new TFile(path); 
+	TH1F* histoCounter = (TH1F*)fw->Get("ZZTree/Counters");
 	
 	double w, binContent;
+	double sigDiscriminant;
+	double bcgDiscriminant;
+	double constant = 70.0;
 	
 	TCanvas* c = new TCanvas("c", "c", 900, 900);
-	
-	THStack* hs = new THStack("hs","Reconstructed mass");
 	
 	if (fChain == 0)
 		return;
@@ -80,37 +81,47 @@ void Analyzer::PlotHistogram(TString name)
 		binContent = histoCounter->GetBinContent(40);
 		w = (137.0 * 1000.0 * xsec * overallEventWeight) / binContent;
 		
-		if(name == "ggH125")
-			histo1->Fill(Higgs->M(),w);
-		else if(name == "qqZZ")
-			histo2->Fill(Higgs->M(),w);
+		if(path.Contains("ggH125"))
+		{
+			sigDiscriminant = 1 / (1 + p_QQB_BKG_MCFM / p_GG_SIG_ghg2_1_ghz1_1_JHUGen);
+			histoSignal->Fill(sigDiscriminant,w);
+		}
+		else if(path.Contains("qqZZ"))
+		{
+			bcgDiscriminant = 1 / (1 + constant * p_QQB_BKG_MCFM / p_GG_SIG_ghg2_1_ghz1_1_JHUGen);
+			histoBackground->Fill(bcgDiscriminant,w);
+		}
 	}
 	
 	gPad->SetLeftMargin(0.15);
 	
-	histo2->GetXaxis()->SetTitle("m_{4l} (GeV)");
-	histo2->GetYaxis()->SetTitle("Events / 2GeV");
-	histo2->SetStats(0);
-	histo2->SetLineColor(kBlue);
-	histo2->SetFillColor(kBlue);
-	hs->Add(histo2);
+	histoSignal->Scale(1.0/histoSignal->Integral());
+	histoSignal->GetXaxis()->SetTitle("D_{kin}");
+	histoSignal->GetYaxis()->SetTitle("Events / 0.02");
+	histoSignal->GetYaxis()->SetRangeUser(0, 1);
+	histoSignal->SetStats(0);
+	histoSignal->SetLineColor(kRed);
+	histoSignal->SetLineWidth(3);
+	histoSignal->Draw("hist same");
 	
-	histo1->GetXaxis()->SetTitle("m_{4l} (GeV)");
-	histo1->GetYaxis()->SetTitle("Events / 2GeV");
-	histo1->SetStats(0);
-	histo1->SetLineColor(kRed);
-	histo1->SetFillColor(kRed);
-	hs->Add(histo1);
-	
-	hs->Draw("hist");
-	hs->GetXaxis()->SetTitle("m_{4l} (GeV)");
-	hs->GetYaxis()->SetTitle("Events / 2GeV");
+	double scale = histoBackground->Integral();
+	cout << scale << endl;						// why is this -nan???
+	scale = 4018.12;							// unless i change it to anything???
+												// then it magically changes retroactively???
+	histoBackground->Scale(1.0/scale);
+	histoBackground->GetXaxis()->SetTitle("D_{kin}");
+	histoBackground->GetYaxis()->SetTitle("Events / 0.02");
+	histoBackground->GetYaxis()->SetRangeUser(0, 1);
+	histoBackground->SetStats(0);
+	histoBackground->SetLineColor(kBlue);
+	histoBackground->SetLineWidth(3);
+	histoBackground->Draw("hist same");
 	
 	TLegend* legend = new TLegend(0.7,0.8,0.9,0.9);
 	legend->SetTextSize(0.03);
-	legend->AddEntry(histo1,"Signal","f");
-	legend->AddEntry(histo2,"Background","f");
+	legend->AddEntry(histoSignal,"Signal","l");
+	legend->AddEntry(histoBackground,"Background","l");
 	legend->Draw();
 	
-	c->SaveAs("Reconstructed.png");
+	c->SaveAs("KinematicDiscriminant.png");
 }

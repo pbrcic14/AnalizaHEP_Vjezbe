@@ -14,8 +14,11 @@ int main()
 	Analyzer* thing;
 	thing = new Analyzer();
 	
-	thing->PlotHistogram("ggH125");
-	thing->PlotHistogram("qqZZ");
+	TString path;
+	path = "/home/public/data/ggH125/ZZ4lAnalysis.root";
+	thing->PlotHistogram(path);
+	path = "/home/public/data/qqZZ/ZZ4lAnalysis.root";
+	thing->PlotHistogram(path);
 	
 	delete thing;
 	
