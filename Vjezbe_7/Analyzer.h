@@ -12,6 +12,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TH1F.h>
+#include <TH2F.h>
 #include <vector>
 
 using namespace std;
@@ -1427,6 +1428,8 @@ public :
    
    TH1F* histoSignal;
    TH1F* histoBackground;
+   TH2F* histo2Dsig;
+   TH2F* histo2Dbcg;
 
    Analyzer(TTree *tree=0);
    virtual ~Analyzer();
@@ -1461,6 +1464,8 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
    
    histoSignal = new TH1F("histoSignal", "Kinematic discriminant", 50, 0.0, 1.0);
    histoBackground = new TH1F("histoBackground", "", 50, 0.0, 1.0);
+   histo2Dsig = new TH2F("histo2Dsig", "m4l vs Dkin for signal",50,70.0,170.0,20,0.0,1.0);
+   histo2Dbcg = new TH2F("histo2Dbcg", "m4l vs Dkin for background",50,70.0,170.0,20,0.0,1.0);
 }
 
 Analyzer::~Analyzer()
