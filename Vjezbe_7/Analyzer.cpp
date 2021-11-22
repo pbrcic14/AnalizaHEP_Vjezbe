@@ -57,9 +57,6 @@ void Analyzer::PlotHistogram(TString path)
 	double bcgDiscriminant;
 	double constant = 70.0;
 	
-	TCanvas* c = new TCanvas("c", "c", 900, 900);
-	c->Divide(2,2);
-	
 	if (fChain == 0)
 		return;
 	Long64_t nentries = fChain->GetEntriesFast();
@@ -97,7 +94,13 @@ void Analyzer::PlotHistogram(TString path)
 			histoBackground->Fill(bcgDiscriminant,w);
 			histo2Dbcg->Fill(Higgs->M(),bcgDiscriminant,w);
 		}
-	}
+	}	
+}
+
+void Analyzer::Drawing()
+{
+	TCanvas* c = new TCanvas("c", "c", 900, 900);
+	c->Divide(2,2);
 	
 	gPad->SetLeftMargin(0.15);
 	
@@ -111,13 +114,8 @@ void Analyzer::PlotHistogram(TString path)
 	histoSignal->SetLineColor(kRed);
 	histoSignal->SetLineWidth(3);
 	histoSignal->Draw("hist");
-	
-	double scale = histoBackground->Integral();
-	cout << scale << endl;						// why is this -nan???
-	scale = 4018.12;							// unless i change it to anything???
-												// then it magically changes retroactively???
-												
-	histoBackground->Scale(1.0/scale);
+											
+	histoBackground->Scale(1.0/histoBackground->Integral());
 	histoBackground->GetXaxis()->SetTitle("D_{kin}");
 	histoBackground->GetYaxis()->SetTitle("Events / 0.02");
 	histoBackground->GetYaxis()->SetRangeUser(0, 1);
@@ -154,3 +152,10 @@ void Analyzer::PlotHistogram(TString path)
 	
 	c->SaveAs("2DHistograms.png");
 }
+
+
+
+
+
+
+

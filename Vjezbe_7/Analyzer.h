@@ -1442,6 +1442,7 @@ public :
    virtual void     Show(Long64_t entry = -1);
    
    virtual void PlotHistogram(TString name);
+   virtual void Drawing();
 };
 
 #endif

@@ -20,6 +20,8 @@ int main()
 	path = "/home/public/data/qqZZ/ZZ4lAnalysis.root";
 	thing->PlotHistogram(path);
 	
+	thing->Drawing();
+	
 	delete thing;
 	
 	return 0;
