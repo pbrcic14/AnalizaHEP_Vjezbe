@@ -1431,9 +1431,7 @@ public :
    TH1F* histoBackground;
    TH2F* histo2Dsig;
    TH2F* histo2Dbcg;
-   TF1 *funcQ;
-   TF1 *funcBW;
-   TF1 *funcQBW;
+   TF1 *funcMaxLike;
 
    Analyzer(TTree *tree=0);
    virtual ~Analyzer();
@@ -1466,11 +1464,9 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
    }
    Init(tree);*/
    
-   histoSignal = new TH1F("histoSignal", "Something", 160, 110.0, 150.0);
-   histoBackground = new TH1F("histoBackground", "", 160, 110.0, 150.0);
-   funcQ = new TF1("funcQ","[0]+[1]*x+[2]*x*x",110.0,150.0);
-   funcBW = new TF1("funcBW","[0]*[1]/((x*x-[2]*[2])*(x*x-[2]*[2])+0.25*[1]*[1])",110.0,150.0);
-   funcQBW = new TF1("funcBW","[0]+[1]*x+[2]*x*x+[3]*[4]/((x*x-[5]*[5])*(x*x-[5]*[5])+0.25*[4]*[4])",110.0,150.0);
+   histoSignal = new TH1F("Maximum likelihood", "Reconstructed mass", 400, 70.0, 170.0);
+   histoBackground = new TH1F("histoBackground", "", 400, 70.0, 170.0);
+   funcMaxLike = new TF1("funcMaxLike","[0]+[1]*x+[2]*x*x + [3]*[4]/((x*x-[5]*[5])*(x*x-[5]*[5])+0.25*[4]*[4]) + [6]*[7]/((x*x-[8]*[8])*(x*x-[8]*[8])+0.25*[7]*[7])",70.0,170.0);
 }
 
 Analyzer::~Analyzer()
