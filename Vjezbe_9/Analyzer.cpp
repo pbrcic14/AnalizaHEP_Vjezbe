@@ -74,20 +74,23 @@ void Analyzer::PlotHistogram(TString path)
 
 void Analyzer::Drawing()
 {
-	TCanvas* c = new TCanvas("c", "c", 900, 900);
+	TCanvas* c = new TCanvas("c", "c", 2700, 900);
+	c->Divide(3);
 	
 	gPad->SetLeftMargin(0.15);
 	gStyle->SetOptFit();
 	
-	func->SetLineColor(kGreen);
+	c->cd(1);
+	
+	func->SetLineColor(kBlue);
+	func->SetTitle("Decay - maximum likelihood; #tau (s); number of atoms");
 	func->Draw();
 	
-	histo->SetLineColor(kRed);
-	histo->SetTitle("Decay; t (s); number of atoms");
-	histo->Draw("p E1 X0");
-	histo->Fit(func);
+	c->cd(2);
 	
-	c->SaveAs("FitDistribution.png");
+	c->cd(3);
+	
+	c->SaveAs("Likelihood.png");
 }
 
 

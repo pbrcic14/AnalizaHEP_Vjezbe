@@ -65,9 +65,7 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
    Init(tree);
 */
 
-   func = new TF1("func", "[0]*exp(-x/[1])/[1]" ,0.0, 10.0);
-   func->SetParNames("N_{0}","#tau");
-   func->SetParameters(100,1);
+   func = new TF1("func", "94.97*exp(-1/x)/x" ,0.0, 10.0);
    histo = new TH1F("Decay", "Decay", 100, 0.0, 10.0);
 }
 
