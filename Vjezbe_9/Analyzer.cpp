@@ -5,6 +5,9 @@
 #include <TH1F.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <iostream>
+
+using namespace std;
 
 void Analyzer::Loop()
 {
@@ -46,6 +49,8 @@ void Analyzer::Loop()
 
 void Analyzer::PlotHistogram(TString path)
 {
+	double tSum, tau;	
+	
 	TTree *tree = new TTree;
 	TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(path);
 	if (!f || !f->IsOpen())
@@ -69,9 +74,14 @@ void Analyzer::PlotHistogram(TString path)
 		// if (Cut(ientry) < 0) continue;
 		
 		histo->Fill(t);
+		tSum += t;
 	}
+	
+	tau = tSum / nentries;
+	cout << "#tau = " << tau << endl;
 }
 
+// not used in task3
 void Analyzer::Drawing()
 {
 	TCanvas* c = new TCanvas("c", "c", 2700, 900);
