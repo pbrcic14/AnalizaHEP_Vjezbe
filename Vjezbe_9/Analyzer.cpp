@@ -11,29 +11,6 @@ using namespace std;
 
 void Analyzer::Loop()
 {
-//   In a ROOT session, you can do:
-//      root> .L Analyzer.C
-//      root> Analyzer t
-//      root> t.GetEntry(12); // Fill t data members with entry number 12
-//      root> t.Show();       // Show values of entry 12
-//      root> t.Show(16);     // Read and show values of entry 16
-//      root> t.Loop();       // Loop on all entries
-//
-
-//     This is the loop skeleton where:
-//    jentry is the global entry number in the chain
-//    ientry is the entry number in the current Tree
-//  Note that the argument to GetEntry must be:
-//    jentry for TChain::GetEntry
-//    ientry for TTree::GetEntry and TBranch::GetEntry
-//
-//       To read only selected branches, Insert statements like:
-// METHOD1:
-//    fChain->SetBranchStatus("*",0);  // disable all branches
-//    fChain->SetBranchStatus("branchname",1);  // activate branchname
-// METHOD2: replace line
-//    fChain->GetEntry(jentry);       //read all branches
-//by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
 
    Long64_t nentries = fChain->GetEntriesFast();
@@ -49,7 +26,7 @@ void Analyzer::Loop()
 
 void Analyzer::PlotHistogram(TString path)
 {
-	double tSum, tau;	
+	tSum = 0.0;
 	
 	TTree *tree = new TTree;
 	TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject(path);
@@ -75,30 +52,44 @@ void Analyzer::PlotHistogram(TString path)
 		
 		histo->Fill(t);
 		tSum += t;
+		
+		N = nentries;
 	}
-	
-	tau = tSum / nentries;
-	cout << "#tau = " << tau << endl;
 }
 
-// not used in task3
 void Analyzer::Drawing()
 {
 	TCanvas* c = new TCanvas("c", "c", 2700, 900);
 	c->Divide(3);
-	
-	gPad->SetLeftMargin(0.15);
 	gStyle->SetOptFit();
 	
-	c->cd(1);
+	c->cd(1);						// 
+	gPad->SetLeftMargin(0.15);
 	
 	func->SetLineColor(kBlue);
-	func->SetTitle("Decay - maximum likelihood; #tau (s); number of atoms");
 	func->Draw();
 	
-	c->cd(2);
+	histo->SetLineColor(kRed);
+	histo->SetTitle("Decay; #tau (s); number of atoms");
+	histo->Draw("p E1 X0");
+	histo->Fit(func);
 	
-	c->cd(3);
+	c->cd(2);						// 
+	gPad->SetLeftMargin(0.15);
+	
+	func2->SetLineColor(kBlue);
+	func2->SetTitle("Decay - maximum likelihood; #tau (s); number of atoms");
+	func2->Draw();
+	
+	c->cd(3);						// 
+	gPad->SetLeftMargin(0.15);
+	
+	func4->SetParameters(N,tSum);
+	func4->SetLineColor(kBlue);
+	func4->SetTitle("Decay; #tau (s); -2ln(L)");
+	double min = func4->GetMinimumX();
+	cout << "minimum is " << min << endl;
+	func4->Draw();
 	
 	c->SaveAs("Likelihood.png");
 }

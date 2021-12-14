@@ -13,6 +13,7 @@
 #include <TFile.h>
 #include <TF1.h>
 #include <TH1F.h>
+#include <TMath.h>
 
 // Header file for the classes stored in the TTree if any.
 
@@ -30,7 +31,12 @@ public :
    TBranch        *b_t;   //!
 
    TF1 *func;
+   TF1 *func2;
+   TF1 *func4;
    TH1F * histo;
+
+   int N;
+   double tSum;
 
    Analyzer(TTree *tree=0);
    virtual ~Analyzer();
@@ -65,7 +71,12 @@ Analyzer::Analyzer(TTree *tree) : fChain(0)
    Init(tree);
 */
 
-   func = new TF1("func", "94.97*exp(-1/x)/x" ,0.0, 10.0);
+   func = new TF1("func", "[0]*exp(-x/[1])/[1]" ,0.0, 10.0);
+   func->SetParNames("N_{0}","#tau");
+   func->SetParameters(100,1);
+   func2 = new TF1("func2", "94.97*exp(-1/x)/x" ,0.0, 10.0);
+   func4 = new TF1("func4", "2*([0]*TMath::Log(x)+[1]/x)" ,1.1, 1.4);
+   func4->SetParNames("nentries","tSum");
    histo = new TH1F("Decay", "Decay", 100, 0.0, 10.0);
 }
 

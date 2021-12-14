@@ -17,7 +17,7 @@ int main()
 	TString path = "/home/public/data/Lifetime/Lifetime.root";
 	thing->PlotHistogram(path);
 	
-	//thing->Drawing();
+	thing->Drawing();
 	
 	delete thing;
 	return 0;
