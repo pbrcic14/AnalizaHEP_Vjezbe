@@ -88,10 +88,15 @@ void Analyzer::Drawing()
 	func4->SetLineColor(kBlue);
 	func4->SetTitle("Decay; #tau (s); -2ln(L)");
 	double min = func4->GetMinimumX();
-	cout << "minimum is " << min << endl;
 	func4->Draw();
 	
-	c->SaveAs("Likelihood.png");
+    double x1 = func4->GetX(func4->GetMinimum() + 1.0, 1.0, func4->GetMinimumX() - 0.0001);
+    double x2 = func4->GetX(func4->GetMinimum() + 1.0, func4->GetMinimumX() + 0.0001, 1.5);
+	double sig1 = func4->GetMinimumX() - x1;
+	double sig2 = x2 - func4->GetMinimumX();
+	cout << "Minimum for tau = " << min << " +" << sig1 << " -" << sig2 << endl;
+	
+	//c->SaveAs("Likelihood.png");
 }
 
 
