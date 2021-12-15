@@ -7,6 +7,7 @@
 #include <TGraphErrors.h>
 #include <iostream>
 #include <TMath.h>
+#include <TLine.h>
 
 using namespace std;
 
@@ -39,8 +40,8 @@ void Analyzer::Drawing()
 	c->cd(2);						// 
 	
 	TF1 *funcChi2;
-	funcChi2 = new TF1("funcChi2", "pow((9.8-1.0*x)/1.0,2) + pow((21.2-2.0*x)/1.9,2) + pow((34.5-3.0*x)/3.1,2) +  pow((39.9-4.0*x)/3.9,2) + pow((48.5-5.0*x)/5.1,2)",0.0, 20.0);
-	funcChi2->SetTitle("Chi-square; x; y");
+	funcChi2 = new TF1("funcChi2", "pow((9.8-1.0*x)/1.0,2) + pow((21.2-2.0*x)/1.9,2) + pow((34.5-3.0*x)/3.1,2) +  pow((39.9-4.0*x)/3.9,2) + pow((48.5-5.0*x)/5.1,2)",9.5, 11.0);
+	funcChi2->SetTitle("Chi-square; #theta; y");
 	funcChi2->Draw();
 	
 	double theta = funcChi2->GetMinimumX();
@@ -52,6 +53,19 @@ void Analyzer::Drawing()
 	double massSig1 = sig1 / pow(theta,2);
 	double massSig2 = sig2 / pow(theta,2);
 	cout << "Minimum at mass = " << mass << " +" << massSig1 << " -" << massSig2 << endl;
+	
+	TLine *l = new TLine(theta, 2.0, theta, funcChi2->GetMinimum());
+	l->SetLineStyle(2);
+	l->Draw();
+	TLine *l1 = new TLine(theta-sig1, 2.0, theta-sig1, funcChi2->GetMinimum()+1);
+	l1->SetLineStyle(2);
+	l1->Draw();
+	TLine *l2 = new TLine(theta+sig2, 2.0, theta+sig2, funcChi2->GetMinimum()+1);
+	l2->SetLineStyle(2);
+	l2->Draw();
+	TLine *lh = new TLine(theta-sig1, funcChi2->GetMinimum()+1, theta+sig2, funcChi2->GetMinimum()+1);
+	lh->SetLineStyle(2);
+	lh->Draw();
 	
 	c->SaveAs("ChiSquare.png");
 }
