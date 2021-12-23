@@ -3,7 +3,10 @@
 #include <string>
 #include <cmath>
 #include <TMath.h>
+#include <TH1F.h>
 #include <cstdlib>
+#include <TStyle.h>
+#include <TCanvas.h>
 #include <ctime>
 #include <random>
 #include <Analyzer.h>
@@ -20,7 +23,7 @@ double Statistics::Binomial(int r, double p, int N)
 	return B;
 }
 
-void Statistics::upperCP(int r, int N, double C)
+double Statistics::upperCP(int r, int N, double C)
 {	
 	double p = 1.0;
 	double sumB = 1.0;
@@ -35,13 +38,18 @@ void Statistics::upperCP(int r, int N, double C)
 		p -= 0.001;
 	}
 	cout << "Upper limit " << p << endl;
+	return p;
 }
 
-void Statistics::lowerCP(int r, int N, double C)
+double Statistics::lowerCP(int r, int N, double C)
 {	
 	double p = 1.0;
 	double sumB;
 	double sum = 100.0;
+	
+	if(r==0)
+		return 0.0;
+	
 	while(sum > ((1.0-C)/2.0))
 	{
 		//cout << 1.0-sumB << " > " << (1.0-C)/2.0 << endl;
@@ -54,7 +62,49 @@ void Statistics::lowerCP(int r, int N, double C)
 		sum = 1.0 - sumB;
 	}
 	cout << "Lower limit " << p << endl;
+	return p;
 }
+
+void Statistics::Drawing()
+{	
+	int N = 10;
+	double C = 0.6827;
+	double lower, upper;
+	
+	TH1F *lowerHisto;
+	TH1F *upperHisto;
+	lowerHisto = new TH1F("smth1", "smth1", 10, 0.0, 10.0);
+	upperHisto = new TH1F("smth2", "smth2", 10, 0.0, 10.0);
+	
+	for(int r=0; r<=N; r++)
+	{
+		cout << r << endl;
+		
+		lower = lowerCP(r, N, C);
+		upper = upperCP(r, N, C);
+		
+		cout << lower << endl;
+		
+		lowerHisto->SetBinContent(r,lower);
+		upperHisto->SetBinContent(r,upper);
+	}
+	
+	TCanvas *c;
+	c = new TCanvas("c","c",1600,900);
+	gStyle->SetOptStat(0);
+	
+	upperHisto->SetLineColor(kBlue);
+	upperHisto->SetFillColor(kBlue);
+	lowerHisto->SetLineColor(kWhite);
+	lowerHisto->SetFillColor(kWhite);
+	
+	upperHisto->Draw();
+	lowerHisto->Draw("same");
+	
+	c->SaveAs("CP.png");
+}
+
+
 
 
 

@@ -15,8 +15,9 @@ int main()
 	s = new Statistics();
 	
 	//s->Binomial(1, 0.800, 4);	// (r, p, N)
-	s->upperCP(2, 78, 0.6827); 	// (r, N, C)
-	s->lowerCP(2, 78, 0.6827);
+	//s->upperCP(2, 78, 0.6827); 	// (r, N, C)
+	//s->lowerCP(2, 78, 0.6827);
+	s->Drawing();
 
 	delete s;
 	return 0;
