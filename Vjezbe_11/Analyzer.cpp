@@ -6,6 +6,7 @@
 #include <TH1F.h>
 #include <cstdlib>
 #include <TStyle.h>
+#include <TColor.h>
 #include <TCanvas.h>
 #include <ctime>
 #include <random>
@@ -37,7 +38,7 @@ double Statistics::upperCP(int r, int N, double C)
 		}
 		p -= 0.001;
 	}
-	cout << "Upper limit " << p << endl;
+	//cout << "Upper limit " << p << endl;
 	return p;
 }
 
@@ -61,7 +62,7 @@ double Statistics::lowerCP(int r, int N, double C)
 		p -= 0.001;
 		sum = 1.0 - sumB;
 	}
-	cout << "Lower limit " << p << endl;
+	//cout << "Lower limit " << p << endl;
 	return p;
 }
 
@@ -78,25 +79,27 @@ void Statistics::Drawing()
 	
 	for(int r=0; r<=N; r++)
 	{
-		cout << r << endl;
-		
 		lower = lowerCP(r, N, C);
 		upper = upperCP(r, N, C);
-		
-		cout << lower << endl;
 		
 		lowerHisto->SetBinContent(r,lower);
 		upperHisto->SetBinContent(r,upper);
 	}
 	
 	TCanvas *c;
-	c = new TCanvas("c","c",1600,900);
+	c = new TCanvas("c","c",900,900);
 	gStyle->SetOptStat(0);
+	
+	upperHisto->SetTitle("Neyman confidence belt; n; p");
+	upperHisto->GetYaxis()->SetRangeUser(0.0,1.0);
+	lowerHisto->GetYaxis()->SetRangeUser(0.0,1.0);
+	
+	Int_t color = TColor::GetFreeColorIndex();
 	
 	upperHisto->SetLineColor(kBlue);
 	upperHisto->SetFillColor(kBlue);
-	lowerHisto->SetLineColor(kWhite);
-	lowerHisto->SetFillColor(kWhite);
+	lowerHisto->SetLineColor(0);
+	lowerHisto->SetFillColor(color);
 	
 	upperHisto->Draw();
 	lowerHisto->Draw("same");
