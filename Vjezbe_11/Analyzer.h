@@ -11,6 +11,5 @@ class Statistics
 		double upperCP(int r, int N, double C);
 		double lowerCP(int r, int N, double C);
 		void Drawing(int rDraw);
-		
-		
+		void RollDice(int N, double C);
 };

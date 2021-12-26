@@ -118,6 +118,28 @@ void Statistics::Drawing(int rDraw)
 	c->SaveAs("CP.png");
 }
 
+void Statistics::RollDice(int N, double C)
+{
+	srand(time(NULL));
+	int counter, r = 0;
+	double upper, lower;
+
+	for (int i=0; i<1000; i++)
+	{
+		counter = 0;
+		for(int j=0; j<N; j++)
+			if(rand()%6 == 0)
+				counter++;
+		
+		upper = upperCP(counter, N, C);
+		lower = lowerCP(counter, N, C);
+
+		if(upper >= (1.0/6.0) && lower <= (1.0/6.0))
+			r++;
+	}
+	
+	cout << "Number of experiments with true value for 10 rolls is " << r << " in interval " << C << endl;
+}
 
 
 
