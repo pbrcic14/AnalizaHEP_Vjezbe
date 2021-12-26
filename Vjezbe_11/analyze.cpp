@@ -14,10 +14,10 @@ int main()
 	Statistics* s;
 	s = new Statistics();
 	
-	//s->Binomial(1, 0.800, 4);	// (r, p, N)
+	//s->Binomial(1, 0.800, 4);		// (r, p, N)
 	//s->upperCP(2, 78, 0.6827); 	// (r, N, C)
 	//s->lowerCP(2, 78, 0.6827);
-	s->Drawing();
+	s->Drawing(6);					// (r)
 
 	delete s;
 	return 0;

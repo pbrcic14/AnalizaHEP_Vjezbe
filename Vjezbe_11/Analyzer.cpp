@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <TStyle.h>
 #include <TColor.h>
+#include <TLine.h>
 #include <TCanvas.h>
 #include <ctime>
 #include <random>
@@ -66,7 +67,7 @@ double Statistics::lowerCP(int r, int N, double C)
 	return p;
 }
 
-void Statistics::Drawing()
+void Statistics::Drawing(int rDraw)
 {	
 	int N = 10;
 	double C = 0.6827;
@@ -103,6 +104,16 @@ void Statistics::Drawing()
 	
 	upperHisto->Draw();
 	lowerHisto->Draw("same");
+	
+	TLine *l = new TLine(rDraw, 0.0, rDraw, upperCP(rDraw, N, C));
+	l->SetLineStyle(2);
+	l->Draw();
+	TLine *l1 = new TLine(0.0, lowerCP(rDraw, N, C), rDraw, lowerCP(rDraw, N, C));
+	l1->SetLineStyle(2);
+	l1->Draw();
+	TLine *l2 = new TLine(0.0, upperCP(rDraw, N, C), rDraw, upperCP(rDraw, N, C));
+	l2->SetLineStyle(2);
+	l2->Draw();
 	
 	c->SaveAs("CP.png");
 }

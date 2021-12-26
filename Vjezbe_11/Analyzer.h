@@ -10,7 +10,7 @@ class Statistics
 		double Binomial(int r, double p, int N);
 		double upperCP(int r, int N, double C);
 		double lowerCP(int r, int N, double C);
-		void Drawing();
+		void Drawing(int rDraw);
 		
 		
 };
