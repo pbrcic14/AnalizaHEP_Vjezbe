@@ -13,6 +13,11 @@
 #include <TFile.h>
 #include <iostream>
 
+// Headers for TMVA
+#include "TMVA/Factory.h"
+#include "TMVA/DataLoader.h"
+#include "TMVA/Tools.h"
+
 using namespace std;
 
 // Header file for the classes stored in the TTree if any.
@@ -172,6 +177,8 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+   
+   virtual void MVATraining( TString myMethodList = "" );
 };
 
 #endif
