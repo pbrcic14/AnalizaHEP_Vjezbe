@@ -1,6 +1,6 @@
 CC=g++
-CFLAGS=-I. $(shell root-config --cflags) -lTMVA
-LDFLAGS = $(shell root-config --libs) -lTMVA
+CFLAGS=-I. $(shell root-config --cflags)
+LDFLAGS = $(shell root-config --libs)
 DEPS = Analyzer.h
 
 %.o: %.cpp $(DEPS)
