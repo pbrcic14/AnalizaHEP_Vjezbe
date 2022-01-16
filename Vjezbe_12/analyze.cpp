@@ -15,6 +15,8 @@ int main()
 	thing = new Analyzer();
 	
 	thing->Loop();
+	thing->Plot();
+	thing->MVATraining();
 	
 	delete thing;
 	return 0;

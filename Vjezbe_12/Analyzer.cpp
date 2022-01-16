@@ -6,30 +6,15 @@
 #include <TCanvas.h>
 #include <iostream>
 
+// Headers for TMVA
+#include "TMVA/Factory.h"
+#include "TMVA/DataLoader.h"
+#include "TMVA/Tools.h"
+
 using namespace std;
 
 void Analyzer::Loop()
 {
-	TCanvas* c = new TCanvas("c", "c", 4800, 1800);
-	c->Divide(4,2);
-	
-	TH1F* histoS1 = new TH1F("histoS1", "ele_pt", 240, 0, 120);
-	TH1F* histoB1 = new TH1F("histoB1", "ele_pt", 240, 0, 120);
-	TH1F* histoS2 = new TH1F("histoS2", "scl_eta", 60, -3, 3);
-	TH1F* histoB2 = new TH1F("histoB2", "scl_eta", 60, -3, 3);
-	TH1F* histoS3 = new TH1F("histoS3", "ele_hadronicOverEm", 40, 0, 0.2);
-	TH1F* histoB3 = new TH1F("histoB3", "ele_hadronicOverEm", 40, 0, 0.2);
-	TH1F* histoS4 = new TH1F("histoS4", "ele_gsfchi2", 100, 0, 10);
-	TH1F* histoB4 = new TH1F("histoB4", "ele_gsfchi2", 100, 0, 10);
-	TH1F* histoS5 = new TH1F("histoS5", "ele_fbrem", 80, -2, 2);
-	TH1F* histoB5 = new TH1F("histoB5", "ele_fbrem", 80, -2, 2);
-	TH1F* histoS6 = new TH1F("histoS6", "ele_ep", 80, 0, 8);
-	TH1F* histoB6 = new TH1F("histoB6", "ele_ep", 80, 0, 8);
-	TH1F* histoS7 = new TH1F("histoS7", "ele_eelepout", 210, 0, 21);
-	TH1F* histoB7 = new TH1F("histoB7", "ele_eelepout", 210, 0, 21);
-	TH1F* histoS8 = new TH1F("histoS8", "ele_pfChargedHadIso", 90, 0, 3);
-	TH1F* histoB8 = new TH1F("histoB8", "ele_pfChargedHadIso", 90, 0, 3);
-	
 	Init(signal);	// signal //-------------------------------------------------------------------
    
 	if (fChain == 0) return;
@@ -77,6 +62,12 @@ void Analyzer::Loop()
 		histoB7->Fill(ele_eelepout);
 		histoB8->Fill(ele_pfChargedHadIso);
 	}
+}
+
+void Analyzer::Plot()
+{
+	TCanvas* c = new TCanvas("c", "c", 4800, 1800);
+	c->Divide(4,2);
 	
 	c->cd(1);			// ele_pt //----------------------------------------------------------------
 	gPad->SetLeftMargin(0.15);
@@ -193,6 +184,53 @@ void Analyzer::Loop()
 	c->SaveAs("ElectronVariables.png");
 }
 
+void Analyzer::MVATraining()
+{
+   TString outfileName( "TMVA.root" );
+   TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
+   
+   TMVA::Factory *factory = new TMVA::Factory( "TMVAClassification", outputFile, "!V:!Silent:Color:DrawProgressBar:Transformations=I;D;P;G,D:AnalysisType=Classification" );
+   TMVA::DataLoader *dataloader = new TMVA::DataLoader("dataset");
+   
+   // Add variables //-----------------------------------------------------------------------------
+   dataloader->AddVariable( "ele_pt", 'F' );
+   dataloader->AddVariable( "ele_ep", 'F' );
+   dataloader->AddVariable( "ele_eelepout", 'F' );
+   dataloader->AddVariable( "ele_gsfchi2", 'F' );
+   
+   // global event weights per tree (see below for setting event-wise weights)
+   Double_t signalWeight     = 1.0;
+   Double_t backgroundWeight = 1.0;
+   
+   // You can add an arbitrary number of signal or background trees
+   dataloader->AddSignalTree( signal, signalWeight );
+   dataloader->AddBackgroundTree( background, backgroundWeight );
+   
+   // Apply additional cuts on the signal and background samples (possibly not needed)
+   TCut mycuts = ""; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
+   TCut mycutb = ""; // for example: TCut mycutb = "abs(var1)<0.5";
+   
+   dataloader->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1000:nTrain_Background=1000:SplitMode=Random:NormMode=NumEvents:!V" );
+   
+   // Chose MVA method //--------------------------------------------------------------------------
+   // Likelihood ("naive Bayes estimator")
+   //if (Use["Likelihood"])
+   factory->BookMethod( dataloader, TMVA::Types::kLikelihood, "Likelihood", "H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50" );
+   
+   // Train MVAs using the set of training events
+   factory->TrainAllMethods();
+   // Evaluate all MVAs using the set of test events
+   factory->TestAllMethods();
+   // Evaluate and compare performance of all configured MVAs
+   factory->EvaluateAllMethods();
+   
+   // Save the output
+   outputFile->Close();
+   std::cout << "==> Wrote root file: " << outputFile->GetName() << std::endl;
+   std::cout << "==> TMVAClassification is done!" << std::endl;
+   delete factory;
+   delete dataloader;
+}
 
 
 

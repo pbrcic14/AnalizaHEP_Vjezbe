@@ -13,17 +13,22 @@
 #include <TFile.h>
 #include <iostream>
 
+// Headers for TMVA
+#include "TMVA/Factory.h"
+#include "TMVA/DataLoader.h"
+#include "TMVA/Tools.h"
+
 using namespace std;
 
 // Header file for the classes stored in the TTree if any.
 
 class Analyzer {
 public :
-   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-   Int_t           fCurrent; //!current Tree number in a TChain
+   TTree *fChain;	//!pointer to the analyzed TTree or TChain
+   Int_t fCurrent;	//!current Tree number in a TChain
    
-   TTree	*signal;
-   TTree	*background;
+   TTree* signal;
+   TTree* background;
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
@@ -163,6 +168,23 @@ public :
    TBranch        *b_Spring16HZZV1wpLoose;   //!
    TBranch        *b_EleMVACats;   //!
 
+   TH1F* histoS1 = new TH1F("histoS1", "ele_pt", 240, 0, 120);
+   TH1F* histoB1 = new TH1F("histoB1", "ele_pt", 240, 0, 120);
+   TH1F* histoS2 = new TH1F("histoS2", "scl_eta", 60, -3, 3);
+   TH1F* histoB2 = new TH1F("histoB2", "scl_eta", 60, -3, 3);
+   TH1F* histoS3 = new TH1F("histoS3", "ele_hadronicOverEm", 40, 0, 0.2);
+   TH1F* histoB3 = new TH1F("histoB3", "ele_hadronicOverEm", 40, 0, 0.2);
+   TH1F* histoS4 = new TH1F("histoS4", "ele_gsfchi2", 100, 0, 10);
+   TH1F* histoB4 = new TH1F("histoB4", "ele_gsfchi2", 100, 0, 10);
+   TH1F* histoS5 = new TH1F("histoS5", "ele_fbrem", 80, -2, 2);
+   TH1F* histoB5 = new TH1F("histoB5", "ele_fbrem", 80, -2, 2);
+   TH1F* histoS6 = new TH1F("histoS6", "ele_ep", 80, 0, 8);
+   TH1F* histoB6 = new TH1F("histoB6", "ele_ep", 80, 0, 8);
+   TH1F* histoS7 = new TH1F("histoS7", "ele_eelepout", 210, 0, 21);
+   TH1F* histoB7 = new TH1F("histoB7", "ele_eelepout", 210, 0, 21);
+   TH1F* histoS8 = new TH1F("histoS8", "ele_pfChargedHadIso", 90, 0, 3);
+   TH1F* histoB8 = new TH1F("histoB8", "ele_pfChargedHadIso", 90, 0, 3);
+
    Analyzer(TTree *tree=0);
    virtual ~Analyzer();
    virtual Int_t    Cut(Long64_t entry);
@@ -172,6 +194,9 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+
+   virtual void Plot();
+   virtual void MVATraining();
 };
 
 #endif
