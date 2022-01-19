@@ -17,6 +17,7 @@ int main()
 	thing->Loop();
 	thing->Plot();
 	thing->MVATraining();
+	thing->MVAPlot();
 	
 	delete thing;
 	return 0;

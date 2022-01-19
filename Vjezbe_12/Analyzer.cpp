@@ -4,6 +4,8 @@
 #include <TH1F.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <TGraph.h>
+#include <TLegend.h>
 #include <iostream>
 
 // Headers for TMVA
@@ -213,9 +215,12 @@ void Analyzer::MVATraining()
    dataloader->PrepareTrainingAndTestTree( mycuts, mycutb, "nTrain_Signal=1000:nTrain_Background=1000:SplitMode=Random:NormMode=NumEvents:!V" );
    
    // Chose MVA method //--------------------------------------------------------------------------
-   // Likelihood ("naive Bayes estimator")
+   
    //if (Use["Likelihood"])
-   factory->BookMethod( dataloader, TMVA::Types::kLikelihood, "Likelihood", "H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50" );
+   //factory->BookMethod( dataloader, TMVA::Types::kLikelihood, "Likelihood", "H:!V:TransformOutput:PDFInterpol=Spline2:NSmoothSig[0]=20:NSmoothBkg[0]=20:NSmoothBkg[1]=10:NSmooth=1:NAvEvtPerBin=50" );
+   
+   //if (Use["BDT"])
+   factory->BookMethod( dataloader, TMVA::Types::kBDT, "BDT", "!H:!V:NTrees=850:MinNodeSize=2.5%:MaxDepth=3:BoostType=AdaBoost:AdaBoostBeta=0.5:UseBaggedBoost:BaggedSampleFraction=0.5:SeparationType=GiniIndex:nCuts=20" );
    
    // Train MVAs using the set of training events
    factory->TrainAllMethods();
@@ -230,6 +235,42 @@ void Analyzer::MVATraining()
    std::cout << "==> TMVAClassification is done!" << std::endl;
    delete factory;
    delete dataloader;
+}
+
+void Analyzer::MVAPlot()
+{
+	TFile* f = new TFile("TMVA.root");
+
+    TGraph* sigGraph;
+    TGraph* bcgGraph;
+    sigGraph = (TGraph*)f->Get("dataset/Method_BDT/BDT/MVA_BDT_S");
+    bcgGraph = (TGraph*)f->Get("dataset/Method_BDT/BDT/MVA_BDT_B");
+
+    TH1F* efficiency;
+    efficiency = (TH1F*)f->Get("dataset/Method_BDT/BDT/MVA_BDT_effBvsS");
+
+    TCanvas* c = new TCanvas("c", "c", 1800, 900);
+    c->Divide(2);
+    gStyle->SetOptStat(0);
+
+    c->cd(1);				// results //--------------------------------------------------------
+    sigGraph->SetTitle("Distribution of MVA results (BDT)");
+    sigGraph->SetLineColor(kRed);
+    bcgGraph->SetLineColor(kBlue);
+    sigGraph->Draw();
+    bcgGraph->Draw("same");
+
+    TLegend* legend = new TLegend(0.8, 0.82, 0.95, 0.92);
+    legend->AddEntry(sigGraph, "Signal", "l");
+    legend->AddEntry(bcgGraph, "Background", "l");
+    legend->Draw();
+
+    c->cd(2);				// efficiency //-----------------------------------------------------
+    efficiency->SetLineColor(kGreen);
+    cout << "Background omission for 90% of signal electrons: " << efficiency->Interpolate(0.9) * 100.0 << "%" << endl;
+    efficiency->Draw();
+	
+	c->SaveAs("MVA_BDT.png");
 }
 
 

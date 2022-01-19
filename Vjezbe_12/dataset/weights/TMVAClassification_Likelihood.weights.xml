@@ -4,11 +4,11 @@
     <Info name="TMVA Release" value="4.2.1 [262657]"/>
     <Info name="ROOT Release" value="6.24/06 [399366]"/>
     <Info name="Creator" value="pbrcic"/>
-    <Info name="Date" value="Sun Jan 16 12:09:32 2022"/>
+    <Info name="Date" value="Wed Jan 19 10:34:37 2022"/>
     <Info name="Host" value="Linux buildhw-x86-15.iad2.fedoraproject.org 5.15.6-200.fc35.x86_64 #1 SMP Wed Dec 1 13:41:10 UTC 2021 x86_64 x86_64 x86_64 GNU/Linux"/>
     <Info name="Dir" value="/home/pbrcic/Vjezbe/Vjezbe_12"/>
     <Info name="Training events" value="2000"/>
-    <Info name="TrainingTime" value="2.56240368e-02"/>
+    <Info name="TrainingTime" value="2.55019665e-02"/>
     <Info name="AnalysisType" value="Classification"/>
   </GeneralInfo>
   <Options>

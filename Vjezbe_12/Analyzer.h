@@ -197,6 +197,7 @@ public :
 
    virtual void Plot();
    virtual void MVATraining();
+   virtual void MVAPlot();
 };
 
 #endif
