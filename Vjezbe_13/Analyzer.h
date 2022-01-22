@@ -25,8 +25,6 @@ public :
 
    // Declaration of leaf types
    Float_t         height;
-   
-   double dataAverage;
 
    // List of branches
    TBranch        *b_height;   //!
@@ -40,9 +38,6 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
-   
-   virtual void Simulation();
-   virtual void Plot();
    
    TH1F* histoHeight = new TH1F("histoHeight", "b_height", 280, 130, 200);
    TH1F* histoTestStatistic = new TH1F("histoTestStatistic", "TestStatistic", 500, 160, 170);

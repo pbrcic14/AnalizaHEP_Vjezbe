@@ -11,8 +11,10 @@
 
 using namespace std;
 
-void Analyzer::Simulation()
+void Analyzer::Loop()
 {
+	// simulation //
+	
 	TRandom1* rand = new TRandom1();
 	int N_measure = 100, N_experiment = 1000000;
 	double heightSum, testStatistic;
@@ -27,12 +29,10 @@ void Analyzer::Simulation()
 		testStatistic = heightSum/N_measure;
 		histoTestStatistic->Fill(testStatistic);
 	}
-}
-
-void Analyzer::Loop()
-{
-	double dataSum = 0.0, p, z;
 	
+	// data and test statistic //
+	
+	double dataSum = 0.0, dataAverage, p, z;
 	if (fChain == 0)
 		return;
 	Long64_t nentries = fChain->GetEntriesFast();
@@ -47,48 +47,47 @@ void Analyzer::Loop()
 		
 		histoHeight->Fill(height);
 		dataSum += height;
-   }
+	}
    
-   dataAverage = dataSum/nentries;
-   histoTestStatistic->Scale(1/histoTestStatistic->Integral());
-   
-   if(dataAverage > 164.7)
-   {
+	dataAverage = dataSum/nentries;
+	histoTestStatistic->Scale(1/histoTestStatistic->Integral());
+	
+	if(dataAverage > 164.7)
+	{
 		p = histoTestStatistic->Integral(histoTestStatistic->FindBin(dataAverage), 500);
 		z = TMath::Sqrt(2)*TMath::ErfcInverse(2*p);
 		cout << "p =" << p << endl;
 		cout << "z =" << z << endl;
-   }
-   else
-   {
+	}
+	else
+	{
 		p = histoTestStatistic->Integral(0, histoTestStatistic->FindBin(dataAverage));
 		z = TMath::Sqrt(2)*TMath::ErfcInverse(2*p);
 		cout << "p =" << p << endl;
 		cout << "z =" << z << endl;
-   }
-}
-
-void Analyzer::Plot()
-{
+	}
+   
+	// plot //
+	
 	TCanvas* c = new TCanvas("c", "c", 900, 900);
 	gPad->SetLeftMargin(0.15);
 	
+	histoTestStatistic->SetTitle("Test statistic");
 	histoTestStatistic->GetXaxis()->SetTitle("height (cm)");
-	histoTestStatistic->GetYaxis()->SetTitle("no. of events");
+	histoTestStatistic->GetYaxis()->SetTitle("normalized no. of events");
 	histoTestStatistic->SetStats(0);
 	histoTestStatistic->SetLineColor(kBlue);
 	histoTestStatistic->SetLineWidth(2);
-	histoTestStatistic->Draw("");
+	histoTestStatistic->Draw("histo");
 	
-	/*
-	TLine *line = new TLine(dataAverage,0,dataAverage,100000);
-	line->SetLineColor(kBlack);
-	line->SetLineWidth(3);
-    line->Draw("same");
-    */
+	TLine *line = new TLine(dataAverage, 0.0, dataAverage, 0.01);
+	line->SetLineWidth(2);
+   	line->Draw();
 	
 	c->SaveAs("TestStatistic.png");
 }
+
+
 
 
 

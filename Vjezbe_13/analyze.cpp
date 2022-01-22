@@ -14,9 +14,6 @@ int main()
 	Analyzer* thing;
 	thing = new Analyzer();
 	
-	
-	thing->Simulation();
-	thing->Plot();
 	thing->Loop();
 	
 	delete thing;
