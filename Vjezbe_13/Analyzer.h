@@ -38,9 +38,14 @@ public :
    virtual void     Loop();
    virtual Bool_t   Notify();
    virtual void     Show(Long64_t entry = -1);
+
+   virtual void Comparison(TString country, double averageCountry, double sigmaCountry);
    
    TH1F* histoHeight = new TH1F("histoHeight", "b_height", 280, 130, 200);
    TH1F* histoTestStatistic = new TH1F("histoTestStatistic", "TestStatistic", 500, 160, 170);
+
+   TH1F *histoSpain = new TH1F("Spain","Spain",500,155,180);
+   TH1F *histoCountry = new TH1F("Country","Country",500,155,180);
 };
 
 #endif
