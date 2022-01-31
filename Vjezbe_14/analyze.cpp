@@ -15,6 +15,7 @@ int main()
 	thing = new Analyzer();
 	
 	thing->Simulation();
+	thing->pScan();
 	
 	delete thing;
 	return 0;

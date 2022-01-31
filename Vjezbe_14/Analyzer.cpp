@@ -61,6 +61,48 @@ void Analyzer::Simulation()
 	c->SaveAs("Test.png");
 }
 
+void Analyzer::pScan()
+{
+	TRandom3* r3 = new TRandom3();
+	double mh, pValue;
+	int br = 0;
+	
+	func2->SetParName(0,"N_SM");
+	func2->SetParameter(0,200);
+	func2->SetParName(1,"zeta_SM");
+	func2->FixParameter(1,100);
+
+	for(int i=10; i<=690; i+=5)
+	{
+		histo->Reset();
+		mh = i/1.0;
+		for(int j=0; j<10000; j++)
+		{
+			if(r3->Rndm() > (-1*(mh-190)*(mh-190)+0.02))
+				histo->Fill(r3->Exp(100));
+			else
+				histo->Fill(r3->Gaus(mh, 0.0236*mh));
+		}
+	
+		histo->Fit(func2,"Q","",i-10,i+10);
+		pValue = (histoChi->Integral(histoChi->FindBin(func2->GetChisquare()),200))/(histoChi->Integral());
+		scan->SetPoint(br,mh,pValue);
+		br++;
+	}
+
+	TCanvas *c2=new TCanvas("canvas","canvas",1600,900);
+	gPad->SetLogy();
+	scan->SetMinimum(0.0001);
+	scan->GetXaxis()->SetTitle("m_{H}");
+	scan->GetYaxis()->SetTitle("p-value");
+	scan->SetTitle("P-value scan");
+	scan->Draw("AL*");
+	
+	c2->SaveAs("pScan.png");
+
+	double z = TMath::Sqrt(2)*TMath::ErfcInverse(2*0.001);
+	cout << "p of 0.001 is " << z << " sigma" << endl;
+}
 
 
 
